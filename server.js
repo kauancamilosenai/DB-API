@@ -7,6 +7,12 @@ app.use(express.json())
 
 app.get('/livros', async (request, response) => {
   try{
+    const {autor} = request.query
+    if(autor){
+      const resultado = await pool.query('SELECT * FROM livros WHERE autor = $1', [autor])
+      return response.status(200).json(resultado.rows) 
+    }
+
     const resultado = await pool.query('SELECT * FROM livros')
     return response.status(200).json(resultado.rows)
   } 
@@ -90,6 +96,8 @@ app.delete('/livros/:id', async (request, response) => {
     return response.status(400).json({Error: "sei la oque por aqui, deu ruim no DELETE"})
   }
 })
+
+
 
 //
 app.listen(9000, ()=>{console.log("alexa aura foi ligada")})
